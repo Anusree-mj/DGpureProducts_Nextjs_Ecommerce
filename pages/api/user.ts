@@ -11,7 +11,7 @@ const getUserDetails = async (req: NextApiRequest, res: NextApiResponse) => {
     const user = await User.findOne().exec();
     if (user) {
       const cartItems = await Cart.findOne({ userId: user._id })
-      const totalCartItem = cartItems?.products.reduce((total, product) => total + 1, 0) || 0
+      const totalCartItem = cartItems?.products.length || 0
 
       res.status(200).json({ status: 'ok', user, totalCartItem });
     } else {

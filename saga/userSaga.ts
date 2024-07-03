@@ -49,7 +49,7 @@ function* getProductDetailsActionSaga(): any {
 function* addProductToCartActionSaga(action: {
     type: string;
     payload: {
-        userId: '', productId: ''
+        userId: '', productId: '', handleAddToCartSuccess: () => void
     }
 }): any {
     try {
@@ -61,6 +61,7 @@ function* addProductToCartActionSaga(action: {
 
         if (response.status === 'ok') {
             yield put(addProductToCartSuccessAction(response.cartList))
+            action.payload.handleAddToCartSuccess();
         } else {
             yield put(addProductToCartFailureAction(response.message))
         }

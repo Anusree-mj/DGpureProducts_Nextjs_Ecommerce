@@ -7,7 +7,11 @@ import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import { Box, CardActionArea } from '@mui/material';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
-import { getProductDetailsAction, userStateType, addProductToCartAction } from '@/store/userReducer/userReducer';
+import {
+    getUserDetailsAction,
+    getProductDetailsAction, userStateType, addProductToCartAction
+} from '@/store/userReducer/userReducer';
+import { toast } from 'react-toastify';
 
 export default function ProductsComponent() {
     const dispatch = useDispatch();
@@ -18,9 +22,13 @@ export default function ProductsComponent() {
     }, [])
 
     const handleAddToCart = (productId: string) => {
-        dispatch(addProductToCartAction({ userId, productId }))
+        dispatch(addProductToCartAction({ userId, productId,handleAddToCartSuccess }))
     }
 
+    const handleAddToCartSuccess = () => {
+        toast.success('Product added to cart!');
+        dispatch(getUserDetailsAction())
+    }
     return (
         <Box sx={{
             minHeight: '100vh',

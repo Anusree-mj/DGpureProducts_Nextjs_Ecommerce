@@ -72,7 +72,7 @@ export default function MainHeaderComponent() {
 
   useEffect(() => {
     dispatch(getUserDetailsAction())
-  }, [])
+  }, [dispatch])
 
 
   const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
