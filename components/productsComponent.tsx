@@ -75,7 +75,7 @@ export default function ProductsComponent() {
                                         alignSelf: 'flex-start',
                                     }}
                                 >
-                                    {item.name}name
+                                    {item.name}
                                 </Typography>
                             </CardContent>
                         </CardActionArea>
