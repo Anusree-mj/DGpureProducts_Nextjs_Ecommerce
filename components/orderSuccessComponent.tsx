@@ -10,7 +10,10 @@ const OrderSuccessComponent = () => {
     const orderDetails = useSelector((state: { userCart: userCartStateType }) => state.userCart.orderDetails);
 
     return (
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '90vh' }}>
+        <Box sx={{
+            display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '90vh',
+            backgroundColor: '##f0f0f0',
+        }}>
             <Box sx={{
                 display: 'flex', flexDirection: 'column', width: '30rem', maxWidth: '90%', p: 4,
                 alignItems: 'center', justifyContent: 'center', boxShadow: '1px 4px 10px rgba(0, 0, 0, 1.1)'

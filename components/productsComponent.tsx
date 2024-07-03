@@ -33,7 +33,7 @@ export default function ProductsComponent() {
     }
     return (
         <Box sx={{
-            minHeight: '100vh',
+            minHeight: '100vh',backgroundColor:'#f0f0f0',
             display: 'flex', flexDirection: 'column',
             justifyContent: 'flex-start', alignItems: 'center',
         }}>

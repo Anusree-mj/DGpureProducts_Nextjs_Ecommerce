@@ -102,10 +102,10 @@ const OrderSummaryComponent = () => {
 
     return (
         <Box sx={{
-            mt: 1,
+            mt: { md: 1, xs: 4 },
             display: 'flex', flexDirection: 'column',
             alignItems: 'flex-start', justifyContent: 'flex-start',
-            width: '30rem', maxWidth: '100%', minHeight: '75vh',
+            width: '30rem', maxWidth: '100%', minHeight: '75vh',backgroundColor:'#f0f0f0',
             p: 2, boxShadow: '1px 4px 10px rgba(0, 0, 0, 0.1)'
         }}>
             <Box sx={{ alignSelf: 'flex-start', maxWidth: '100%' }}>

@@ -10,6 +10,7 @@ import { apiCall } from '@/services/api';
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import OrderSummaryComponent from "./orderSummaryComponent";
+import Swal from "sweetalert2";
 
 const CartComponent = () => {
     const dispatch = useDispatch();
@@ -21,7 +22,7 @@ const CartComponent = () => {
             router.push('/')
         }
         dispatch(getCartListAction())
-    }, [dispatch])
+    }, [dispatch, cartListDetails])
 
 
 
@@ -44,24 +45,43 @@ const CartComponent = () => {
     }
     const removeProduct = async (productId: string, cartId: string) => {
         try {
-            const response = await apiCall({
-                method: 'DELETE',
-                endpoint: `cart`,
-                body: { productId, cartId }
-            });
-            if (response.status === 'ok') {
-                dispatch(getCartListAction())
+            const isConfirmed = await showConfirmationDialog();
+            if (isConfirmed) {
+                const response = await apiCall({
+                    method: 'DELETE',
+                    endpoint: `cart`,
+                    body: { productId, cartId }
+                });
+                if (response.status === 'ok') {
+                    dispatch(getCartListAction())
+                } else {
+                    toast.error(`Can't remove product. Try again!`)
+                }
             } else {
-                toast.error(`Can't remove product. Try again!`)
+                return;
             }
         }
         catch (err) {
             console.log('Err found', err)
         }
     }
+    const showConfirmationDialog = async (): Promise<boolean> => {
+        const result = await Swal.fire({
+            title: 'Are you sure?',
+            text: 'Do you really want to remove this product from your cart?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, remove it!',
+            cancelButtonText: 'No, keep it',
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+        });
+
+        return result.isConfirmed;
+    }
     return (
         <Box sx={{
-            display: 'flex', alignItems: 'center',
+            display: 'flex', alignItems: 'center',backgroundColor:'#f0f0f0',
             flexDirection: 'column', justifyContent: 'center'
         }}>
             <Typography sx={{
@@ -73,7 +93,7 @@ const CartComponent = () => {
             <Box sx={{
                 mt: 1,
                 display: 'flex', flexWrap: 'wrap',
-                alignItems: 'center', justifyContent: 'space-between',
+                alignItems: 'center', justifyContent: { md: 'space-between', xs: 'center' },
                 width: '80rem', maxWidth: '90%'
             }}>
                 {/* cart items */}
@@ -81,12 +101,12 @@ const CartComponent = () => {
                     mt: 1,
                     display: 'flex', flexDirection: 'column',
                     alignItems: 'flex-start', justifyContent: 'flex-start',
-                    width: '30rem', maxWidth: '100%', minHeight: '75vh',
+                    width: '30rem', maxWidth: '100%', minHeight: { md: '75vh' },
                 }}>
                     {cartListDetails.products.map((product, index) => (
                         <Box key={index} sx={{
                             p: 3, mt: index === 0 ? 0 : 3,
-                            width: '30rem', maxWidth: '90%', boxShadow: '1px 4px 10px rgba(0, 0, 0, 0.1)'
+                            width: '100%', boxShadow: '1px 4px 10px rgba(0, 0, 0, 0.1)'
                         }}>
                             <Box key={index} sx={{
                                 display: 'flex', justifyContent: 'space-around',
@@ -163,7 +183,7 @@ const CartComponent = () => {
                                 </Box>
                                 < ClearOutlinedIcon sx={{
                                     alignSelf: 'flex-start',
-                                    color: '#3d3c3c',
+                                    color: '#3d3c3c', cursor: 'pointer'
                                 }}
                                     onClick={() => {
                                         removeProduct(product.productId._id, cartListDetails._id);
