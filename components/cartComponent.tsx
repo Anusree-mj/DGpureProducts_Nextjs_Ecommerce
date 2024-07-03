@@ -9,6 +9,8 @@ import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined';
 import { apiCall } from '@/services/api';
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import OrderSummaryComponent from "./orderSummaryComponent";
+import ProductsComponent from "./productsComponent";
 
 const CartComponent = () => {
     const dispatch = useDispatch();
@@ -64,20 +66,28 @@ const CartComponent = () => {
             display: 'flex', alignItems: 'center',
             flexDirection: 'column', justifyContent: 'center'
         }}>
+            <Typography sx={{
+                mt: 3, width: '80rem', maxWidth: '90%',
+                fontSize: '1.2rem', fontWeight: 800, color: '#3d3c3c'
+            }}>
+                My Cart
+            </Typography>
             <Box sx={{
+                mt: 1,
                 display: 'flex', flexWrap: 'wrap',
                 alignItems: 'center', justifyContent: 'space-between',
-                border: '1px solid green', width: '80rem', maxWidth: '90%'
+                width: '80rem', maxWidth: '90%'
             }}>
                 {/* cart items */}
                 <Box sx={{
+                    mt: 1,
                     display: 'flex', flexDirection: 'column',
-                    alignItems: 'center', justifyContent: 'center',
-                    width: '30rem', maxWidth: '100%'
+                    alignItems: 'flex-start', justifyContent: 'flex-start',
+                    width: '30rem', maxWidth: '100%', minHeight: '75vh',
                 }}>
                     {cartListDetails.products.map((product, index) => (
                         <Box sx={{
-                            p: 3, mt: 3,
+                            p: 3, mt: index === 0 ? 0 : 3,
                             width: '30rem', maxWidth: '90%', boxShadow: '1px 4px 10px rgba(0, 0, 0, 0.1)'
                         }}>
                             <Box key={index} sx={{
@@ -87,8 +97,8 @@ const CartComponent = () => {
                                 <Image
                                     src={product.productId.image}
                                     alt="logo"
-                                    width={100}
-                                    height={100}
+                                    width={120}
+                                    height={120}
                                     style={{ marginRight: '8px' }}
                                 />
                                 <Box sx={{
@@ -96,33 +106,33 @@ const CartComponent = () => {
                                     flexDirection: 'column', alignSelf: 'center',
                                 }}>
                                     <Typography sx={{
-                                        fontSize: '1rem', fontWeight: 600, color: '#3d3c3c'
+                                        fontSize: '0.9rem', fontWeight: 600, color: '#3d3c3c'
                                     }}>
                                         {product.productId.name}
                                     </Typography>
                                     <Typography sx={{
                                         color: '#3d3c3c',
-                                        fontSize: '1rem', fontWeight: 600,
+                                        fontSize: '0.9rem', fontWeight: 600,
                                     }}>
                                         ₹ {product.productId.price}/-
                                     </Typography>
 
                                     <Typography sx={{
                                         mt: 1, color: '#3d3c3c',
-                                        fontSize: '0.9rem',
+                                        fontSize: '0.8rem',
                                     }}>
                                         Qty: {product.count}
                                     </Typography>
                                     <Typography sx={{
                                         color: '#3d3c3c',
-                                        fontSize: '0.9rem', fontWeight: 600
+                                        fontSize: '0.8rem', fontWeight: 600
                                     }}>
                                         Total: ₹ {product.amount}/-
                                     </Typography>
                                     <Box sx={{
-                                        mt: 2, p: 0,
+                                        mt: 2, p: 0, height: '1.5rem',
                                         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                                        boxShadow: '1px 4px 10px rgba(0, 0, 0, 0.2)',
+                                        border:'0.5px solid #918080'
                                     }}>
                                         <MinimizeOutlinedIcon sx={{
                                             color: product.count === 1 ? '#ccc' : '#3d3c3c',
@@ -156,13 +166,14 @@ const CartComponent = () => {
                                     alignSelf: 'flex-start',
                                     color: '#3d3c3c',
                                 }}
-                                onClick={() => {
+                                    onClick={() => {
                                         removeProduct(product.productId._id, cartListDetails._id);
-                                }} />
+                                    }} />
                             </Box>
                         </Box>
                     ))}
                 </Box>
+                <OrderSummaryComponent />
             </Box>
         </Box >
     )
