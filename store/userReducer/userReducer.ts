@@ -1,12 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { UserItem, ProductItem, CartItem } from "./type";
+import { UserItem, ProductItem } from "./type";
 
 export interface userStateType {
     user: UserItem;
     totalCartItem: number;
     products: ProductItem[];
-    cartList: CartItem;
     isLoading: boolean;
     error: string;
 }
@@ -20,11 +19,6 @@ const initialState: userStateType = {
     },
     totalCartItem: 0,
     products: [],
-    cartList: {
-        userId: "",
-        products: [],
-        totalAmount: 0
-    },
     isLoading: false,
     error: ''
 }
@@ -66,21 +60,6 @@ export const userSlice: any = createSlice({
             console.log('eror found', state.error)
         },
 
-        // add product to cart
-        addProductToCartAction: (state) => {
-            console.log('entered in user action')
-            state.isLoading = true;
-        },
-        addProductToCartSuccessAction: (state, action) => {
-            state.isLoading = false;
-            state.cartList = action.payload;
-            console.log('cartList details', state.cartList)
-        },
-        addProductToCartFailureAction: (state, action) => {
-            state.isLoading = false;
-            state.error = action.payload;
-            console.log('eror found', state.error)
-        },
     }
 })
 export const {
@@ -91,9 +70,5 @@ export const {
     getProductDetailsAction,
     getProductDetailsFailureAction,
     getProductDetailsSuccessAction,
-
-    addProductToCartAction,
-    addProductToCartFailureAction,
-    addProductToCartSuccessAction,
 
 } = userSlice.actions;

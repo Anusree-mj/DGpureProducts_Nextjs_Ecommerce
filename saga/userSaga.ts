@@ -2,7 +2,6 @@ import { takeEvery, put, call } from 'redux-saga/effects';
 import {
     getUserDetailsAction, getUserDetailsFailureAction, getUserDetailsSuccessAction,
     getProductDetailsAction, getProductDetailsFailureAction, getProductDetailsSuccessAction,
-    addProductToCartAction, addProductToCartFailureAction, addProductToCartSuccessAction,
 
 } from '@/store/userReducer/userReducer';
 
@@ -45,36 +44,7 @@ function* getProductDetailsActionSaga(): any {
     }
 }
 
-// add product to cart
-function* addProductToCartActionSaga(action: {
-    type: string;
-    payload: {
-        userId: '', productId: '', handleAddToCartSuccess: () => void
-    }
-}): any {
-    try {
-        const response = yield call<any>(apiCall, {
-            method: 'POST',
-            endpoint: 'cart',
-            body: action.payload
-        });
-
-        if (response.status === 'ok') {
-            yield put(addProductToCartSuccessAction(response.cartList))
-            action.payload.handleAddToCartSuccess();
-        } else {
-            yield put(addProductToCartFailureAction(response.message))
-        }
-    } catch (err) {
-        yield put(addProductToCartFailureAction(err))
-    }
-}
-
-
-
 export function* userWatcher() {
     yield takeEvery(getUserDetailsAction, getUserDetailsActionSaga);
     yield takeEvery(getProductDetailsAction, getProductDetailsActionSaga);
-    yield takeEvery(addProductToCartAction, addProductToCartActionSaga);
-
 }

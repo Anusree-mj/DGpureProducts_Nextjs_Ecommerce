@@ -1,97 +1,171 @@
-import { useEffect } from 'react';
-import { UseDispatch, useDispatch, useSelector } from 'react-redux';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import Typography from '@mui/material/Typography';
-import { Box, CardActionArea } from '@mui/material';
-import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
-import {
-    getUserDetailsAction,
-    getProductDetailsAction, userStateType, addProductToCartAction
-} from '@/store/userReducer/userReducer';
-import { toast } from 'react-toastify';
+import { useEffect } from "react";
+import { UseDispatch, useDispatch, useSelector } from "react-redux";
+import { getCartListAction, userCartStateType } from "@/store/userReducer/userCartReducer";
+import { Box, Button, Typography } from "@mui/material"
+import Image from 'next/image';
+import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
+import MinimizeOutlinedIcon from '@mui/icons-material/MinimizeOutlined';
+import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined';
+import { apiCall } from '@/services/api';
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
-export default function ProductsComponent() {
+const CartComponent = () => {
     const dispatch = useDispatch();
-    const productDetails = useSelector((state: { user: userStateType }) => state.user.products);
-    const userId = useSelector((state: { user: userStateType }) => state.user.user._id);
+    const router = useRouter();
+    const cartListDetails = useSelector((state: { userCart: userCartStateType }) => state.userCart.cartList);
+
     useEffect(() => {
-        dispatch(getProductDetailsAction())
-    }, [])
+        dispatch(getCartListAction())
+    }, [dispatch])
 
-    const handleAddToCart = (productId: string) => {
-        dispatch(addProductToCartAction({ userId, productId,handleAddToCartSuccess }))
+    useEffect(() => {
+        if (cartListDetails.products.length === 0) {
+            router.push('/')
+        }
+    }, [cartListDetails])
+
+    const editCount = async (count: number, productId: string, cartId: string) => {
+        try {
+            const response = await apiCall({
+                method: 'PUT',
+                endpoint: `cart`,
+                body: { productId, cartId, count }
+            });
+            if (response.status === 'ok') {
+                dispatch(getCartListAction())
+            } else {
+                toast.error(`Can't update count. Try again!`)
+            }
+        }
+        catch (err) {
+            console.log('Err found', err)
+        }
     }
-
-    const handleAddToCartSuccess = () => {
-        toast.success('Product added to cart!');
-        dispatch(getUserDetailsAction())
+    const removeProduct = async (productId: string, cartId: string) => {
+        try {
+            const response = await apiCall({
+                method: 'DELETE',
+                endpoint: `cart`,
+                body: { productId, cartId }
+            });
+            if (response.status === 'ok') {
+                dispatch(getCartListAction())
+            } else {
+                toast.error(`Can't remove product. Try again!`)
+            }
+        }
+        catch (err) {
+            console.log('Err found', err)
+        }
     }
     return (
         <Box sx={{
-            minHeight: '100vh',
-            display: 'flex', flexDirection: 'column',
-            justifyContent: 'center', alignItems: 'center',
+            display: 'flex', alignItems: 'center',
+            flexDirection: 'column', justifyContent: 'center'
         }}>
             <Box sx={{
-                display: 'flex', flexWrap: 'wrap', gap: { md: 5, xs: 2 }, pt: 2,
-                justifyContent: 'center', alignItems: 'center', width: '80rem', maxWidth: '90%', pb: 3
+                display: 'flex', flexWrap: 'wrap',
+                alignItems: 'center', justifyContent: 'space-between',
+                border: '1px solid green', width: '80rem', maxWidth: '90%'
             }}>
-                {productDetails && productDetails.map((item, index) => (
-                    <Card
-                        key={index}
-                        sx={{
-                            p: 0, boxShadow: '1px 4px 10px rgba(0, 0, 0, 1.1)',
-                            mt: 2, display: 'flex', flexWrap: 'wrap', alignItems: 'center',
-                            justifyContent: 'center', borderRadius: '1rem',
-                            width: { xs: '8rem', sm: '12rem' }, maxWidth: '100%',
-                        }}
-                    >
-                        <CardActionArea>
-                            <CardContent
-                                sx={{
-                                    pb: 1,
-                                    display: 'flex', flexDirection: 'column', alignItems: 'center',
-                                    justifyContent: 'center'
-                                }}
-                            >
-                                <CardMedia
-                                    component="img"
-                                    width="100%"
-                                    image={item.image}
-                                    alt="Therapist"
-                                />
-                                <Typography
-                                    sx={{
-                                        color: '#325343', fontSize: '1rem', fontWeight: 600, mt: 1,
-                                        alignSelf: 'flex-start',
-                                    }}
-                                >
-                                    {item.name}name
-                                </Typography>
-                            </CardContent>
-                        </CardActionArea>
-                        <CardActions sx={{
-                            p: '0 1.5rem 1rem 1.5rem',
-                            display: 'flex', justifyContent: 'space-between',
-                            alignItems: 'center', width: '100%',
+                {/* cart items */}
+                <Box sx={{
+                    display: 'flex', flexDirection: 'column',
+                    alignItems: 'center', justifyContent: 'center',
+                    width: '30rem', maxWidth: '100%'
+                }}>
+                    {cartListDetails.products.map((product, index) => (
+                        <Box sx={{
+                            p: 3, mt: 3,
+                            width: '30rem', maxWidth: '90%', boxShadow: '1px 4px 10px rgba(0, 0, 0, 0.1)'
                         }}>
-                            <Typography
-                                sx={{
-                                    color: '#325343', fontSize: '1rem', fontWeight: 800,
+                            <Box key={index} sx={{
+                                display: 'flex', justifyContent: 'space-around',
+                                alignItems: 'center',
+                            }}>
+                                <Image
+                                    src={product.productId.image}
+                                    alt="logo"
+                                    width={100}
+                                    height={100}
+                                    style={{ marginRight: '8px' }}
+                                />
+                                <Box sx={{
+                                    display: 'flex',
+                                    flexDirection: 'column', alignSelf: 'center',
+                                }}>
+                                    <Typography sx={{
+                                        fontSize: '1rem', fontWeight: 600, color: '#3d3c3c'
+                                    }}>
+                                        {product.productId.name}
+                                    </Typography>
+                                    <Typography sx={{
+                                        color: '#3d3c3c',
+                                        fontSize: '1rem', fontWeight: 600,
+                                    }}>
+                                        ₹ {product.productId.price}/-
+                                    </Typography>
+
+                                    <Typography sx={{
+                                        mt: 1, color: '#3d3c3c',
+                                        fontSize: '0.9rem',
+                                    }}>
+                                        Qty: {product.count}
+                                    </Typography>
+                                    <Typography sx={{
+                                        color: '#3d3c3c',
+                                        fontSize: '0.9rem', fontWeight: 600
+                                    }}>
+                                        Total: ₹ {product.amount}/-
+                                    </Typography>
+                                    <Box sx={{
+                                        mt: 2, p: 0,
+                                        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                                        boxShadow: '1px 4px 10px rgba(0, 0, 0, 0.2)',
+                                    }}>
+                                        <MinimizeOutlinedIcon sx={{
+                                            color: product.count === 1 ? '#ccc' : '#3d3c3c',
+                                            mb: 2,
+                                            alignSelf: 'center',
+                                            cursor: product.count === 1 ? 'not-allowed' : 'pointer',  // Change cursor style when disabled
+
+                                        }}
+                                            onClick={() => {
+                                                if (product.count > 1) {
+                                                    editCount(product.count - 1, product.productId._id, cartListDetails._id);
+                                                }
+                                            }}
+                                        />
+                                        <Typography
+                                            sx={{
+                                                color: '#3d3c3c',
+                                                textAlign: 'center'
+                                            }}
+                                        >
+                                            {product.count}
+                                        </Typography>
+                                        <AddOutlinedIcon sx={{ alignSelf: 'center', color: '#3d3c3c', }}
+                                            onClick={() => editCount(product.count + 1,
+                                                product.productId._id, cartListDetails._id
+                                            )}
+                                        />
+                                    </Box>
+                                </Box>
+                                < ClearOutlinedIcon sx={{
                                     alignSelf: 'flex-start',
+                                    color: '#3d3c3c',
                                 }}
-                            >
-                                ₹ {item.price}
-                            </Typography>
-                            <AddShoppingCartIcon sx={{ color: '#325343', fontSize: '1.5rem', cursor: 'pointer' }}
-                                onClick={() => { handleAddToCart(item._id) }} />
-                        </CardActions>
-                    </Card>
-                ))}
+                                onClick={() => {
+                                        removeProduct(product.productId._id, cartListDetails._id);
+                                }} />
+                            </Box>
+                        </Box>
+                    ))}
+                </Box>
             </Box>
-        </Box>
-    );
+        </Box >
+    )
 }
+
+export default CartComponent

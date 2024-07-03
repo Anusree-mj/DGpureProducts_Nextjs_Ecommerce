@@ -17,6 +17,7 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import { getUserDetailsAction, userStateType } from '@/store/userReducer/userReducer';
 import { toast } from 'react-toastify';
+import { useRouter } from "next/navigation";
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -60,6 +61,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 export default function MainHeaderComponent() {
   const dispatch = useDispatch();
+  const router = useRouter();
   const userDetails = useSelector((state: { user: userStateType }) => state.user.user);
   const totalCartItem = useSelector((state: { user: userStateType }) => state.user.totalCartItem);
 
@@ -96,8 +98,15 @@ export default function MainHeaderComponent() {
       toast.error('Your cart is empty!')
       return;
     }
+    else {
+      setAnchorEl(null);
+      handleMobileMenuClose();
+      router.push('/cart')
+    }
   }
-
+  const handleGoToMain = () => {
+    router.push('/')
+  }
 
   const menuId = 'primary-search-account-menu';
   const renderMenu = (
@@ -168,7 +177,8 @@ export default function MainHeaderComponent() {
             variant="h6"
             noWrap
             component="div"
-            sx={{ flexShrink: 0, mr: 2 }}
+            sx={{ flexShrink: 0, mr: 2, cursor: 'pointer' }}
+            onClick={handleGoToMain}
           >
             DGpure
           </Typography>

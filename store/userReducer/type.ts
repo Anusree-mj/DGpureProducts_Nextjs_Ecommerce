@@ -13,11 +13,18 @@ export interface ProductItem {
 }
 
 export interface CartProduct {
-    productId: string;
-    count: number
+    productId: {
+        _id: string;
+        name: string;
+        image: string;
+        price: number;
+    };
+    count: number;
+    amount: number;
 }
 
 export interface CartItem {
+    _id: string;
     userId: string;
     products: CartProduct[];
     totalAmount: number

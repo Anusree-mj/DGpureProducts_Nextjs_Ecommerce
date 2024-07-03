@@ -4,7 +4,8 @@ export interface ICart {
     userId: ObjectId;
     products: [{
         productId: ObjectId,
-        count: number
+        count: number,
+        amount: number
     }];
     totalAmount: number
 }
@@ -16,7 +17,7 @@ export interface ICartDocument extends ICart, Document {
 
 const cartSchema = new mongoose.Schema<ICartDocument>(
     {
-        userId: { 
+        userId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User',
         },
@@ -25,10 +26,14 @@ const cartSchema = new mongoose.Schema<ICartDocument>(
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'Product',
             },
-            Count: {
+            count: {
                 type: Number,
                 default: 1,
             },
+            amount: {
+                type: Number,
+                required: true
+            }
         }],
         totalAmount: {
             type: Number,
