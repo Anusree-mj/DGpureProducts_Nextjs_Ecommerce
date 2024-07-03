@@ -4,6 +4,7 @@ import { UserItem, ProductItem, CartItem } from "./type";
 
 export interface userStateType {
     user: UserItem;
+    totalCartItem: number;
     products: ProductItem[];
     cartList: CartItem;
     isLoading: boolean;
@@ -17,6 +18,7 @@ const initialState: userStateType = {
         phone: 0,
         address: ""
     },
+    totalCartItem: 0,
     products: [],
     cartList: {
         userId: "",
@@ -38,7 +40,8 @@ export const userSlice: any = createSlice({
         },
         getUserDetailsSuccessAction: (state, action) => {
             state.isLoading = false;
-            state.user = action.payload;
+            state.user = action.payload.user;
+            state.totalCartItem = action.payload.totalCartItem
             console.log('user details', state.user)
         },
         getUserDetailsFailureAction: (state, action) => {
@@ -62,6 +65,22 @@ export const userSlice: any = createSlice({
             state.error = action.payload;
             console.log('eror found', state.error)
         },
+
+        // add product to cart
+        addProductToCartAction: (state) => {
+            console.log('entered in user action')
+            state.isLoading = true;
+        },
+        addProductToCartSuccessAction: (state, action) => {
+            state.isLoading = false;
+            state.cartList = action.payload;
+            console.log('cartList details', state.cartList)
+        },
+        addProductToCartFailureAction: (state, action) => {
+            state.isLoading = false;
+            state.error = action.payload;
+            console.log('eror found', state.error)
+        },
     }
 })
 export const {
@@ -71,5 +90,10 @@ export const {
 
     getProductDetailsAction,
     getProductDetailsFailureAction,
-    getProductDetailsSuccessAction
+    getProductDetailsSuccessAction,
+
+    addProductToCartAction,
+    addProductToCartFailureAction,
+    addProductToCartSuccessAction,
+
 } = userSlice.actions;

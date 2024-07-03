@@ -16,6 +16,7 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import { getUserDetailsAction, userStateType } from '@/store/userReducer/userReducer';
+import { toast } from 'react-toastify';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -60,6 +61,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 export default function MainHeaderComponent() {
   const dispatch = useDispatch();
   const userDetails = useSelector((state: { user: userStateType }) => state.user.user);
+  const totalCartItem = useSelector((state: { user: userStateType }) => state.user.totalCartItem);
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
@@ -80,15 +82,22 @@ export default function MainHeaderComponent() {
   const handleMobileMenuClose = () => {
     setMobileMoreAnchorEl(null);
   };
-
   const handleMenuClose = () => {
     setAnchorEl(null);
     handleMobileMenuClose();
   };
-
   const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
+  const handleGoToCart = () => {
+    if (totalCartItem === 0) {
+      setAnchorEl(null);
+      handleMobileMenuClose();
+      toast.error('Your cart is empty!')
+      return;
+    }
+  }
+
 
   const menuId = 'primary-search-account-menu';
   const renderMenu = (
@@ -128,14 +137,14 @@ export default function MainHeaderComponent() {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem>
+      <MenuItem onClick={handleGoToCart}>
         <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-          <Badge badgeContent={0} color="error">
+          <Badge badgeContent={totalCartItem} color="error">
             <ShoppingCartIcon />
           </Badge>
         </IconButton>
         <p>Shopping Cart</p>
-      </MenuItem>
+      </MenuItem >
       <MenuItem onClick={handleProfileMenuOpen}>
         <IconButton
           size="large"
@@ -174,8 +183,8 @@ export default function MainHeaderComponent() {
           </Search>
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-            <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-              <Badge badgeContent={0} color="error">
+            <IconButton size="large" aria-label="show 4 new mails" color="inherit" onClick={handleGoToCart}>
+              <Badge badgeContent={totalCartItem} color="error">
                 <ShoppingCartIcon />
               </Badge>
             </IconButton>

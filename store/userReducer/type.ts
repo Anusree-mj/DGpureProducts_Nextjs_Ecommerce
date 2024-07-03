@@ -6,6 +6,7 @@ export interface UserItem {
 }
 
 export interface ProductItem {
+    _id: string;
     name: string;
     image: string;
     price: number;

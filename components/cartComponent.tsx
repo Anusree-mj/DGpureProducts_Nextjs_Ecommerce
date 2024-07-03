@@ -7,72 +7,83 @@ import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import { Box, CardActionArea } from '@mui/material';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+import { getProductDetailsAction, userStateType, addProductToCartAction } from '@/store/userReducer/userReducer';
 
 export default function ProductsComponent() {
-    
     const dispatch = useDispatch();
+    const productDetails = useSelector((state: { user: userStateType }) => state.user.products);
+    const userId = useSelector((state: { user: userStateType }) => state.user.user._id);
     useEffect(() => {
-
+        dispatch(getProductDetailsAction())
     }, [])
+
+    const handleAddToCart = (productId: string) => {
+        dispatch(addProductToCartAction({ userId, productId }))
+    }
+
     return (
         <Box sx={{
-            minHeight: '100vh', backgroundColor: 'white',
-            display: 'flex', flexWrap: 'wrap', gap: 5,
-            justifyContent: 'center', alignItems: 'center', mt: 2,
-            '@media (max-width: 600px)': {
-                gap: 2,
-            }
+            minHeight: '100vh',
+            display: 'flex', flexDirection: 'column',
+            justifyContent: 'center', alignItems: 'center',
         }}>
-            <Card
-                // key={index}
-                sx={{
-                    p: 0,
-                    mt: 2, display: 'flex', flexWrap: 'wrap', alignItems: 'center',
-                    justifyContent: 'center', borderRadius: '1rem',
-                    width: '15rem', maxWidth: '80%',
-                    '@media (max-width: 600px)': {
-                        width: '45%', // Ensure two cards in a row for small screens
-                    },
-                }}
-            >
-                <CardActionArea>
-                    <CardContent
+            <Box sx={{
+                display: 'flex', flexWrap: 'wrap', gap: { md: 5, xs: 2 }, pt: 2,
+                justifyContent: 'center', alignItems: 'center', width: '80rem', maxWidth: '90%', pb: 3
+            }}>
+                {productDetails && productDetails.map((item, index) => (
+                    <Card
+                        key={index}
                         sx={{
-                            display: 'flex', flexDirection: 'column', alignItems: 'center',
-                            justifyContent: 'center'
+                            p: 0, boxShadow: '1px 4px 10px rgba(0, 0, 0, 1.1)',
+                            mt: 2, display: 'flex', flexWrap: 'wrap', alignItems: 'center',
+                            justifyContent: 'center', borderRadius: '1rem',
+                            width: { xs: '8rem', sm: '12rem' }, maxWidth: '100%',
                         }}
                     >
-                        <CardMedia
-                            component="img"
-                            height="50"
-                            // image={item.image}
-                            alt="Therapist"
-                        />
-                        <Typography
-                            sx={{
-                                color: '#325343', fontSize: '1rem', fontWeight: 600, mt: 1,
-                                alignSelf: 'flex-start',
-                            }}
-                        >
-                            {/* {item.name} */}name
-                        </Typography>
-                    </CardContent>
-                </CardActionArea>
-                <CardActions sx={{
-                    display: 'flex', justifyContent: 'space-between',
-                    alignItems: 'center', width: '100%'
-                }}>
-                    <Typography
-                        sx={{
-                            color: '#325343', fontSize: '1rem', fontWeight: 600,
-                            alignSelf: 'flex-start',
-                        }}
-                    >
-                        {/* {item.name} */}price
-                    </Typography>
-                    <AddShoppingCartIcon />
-                </CardActions>
-            </Card>
+                        <CardActionArea>
+                            <CardContent
+                                sx={{
+                                    pb: 1,
+                                    display: 'flex', flexDirection: 'column', alignItems: 'center',
+                                    justifyContent: 'center'
+                                }}
+                            >
+                                <CardMedia
+                                    component="img"
+                                    width="100%"
+                                    image={item.image}
+                                    alt="Therapist"
+                                />
+                                <Typography
+                                    sx={{
+                                        color: '#325343', fontSize: '1rem', fontWeight: 600, mt: 1,
+                                        alignSelf: 'flex-start',
+                                    }}
+                                >
+                                    {item.name}name
+                                </Typography>
+                            </CardContent>
+                        </CardActionArea>
+                        <CardActions sx={{
+                            p: '0 1.5rem 1rem 1.5rem',
+                            display: 'flex', justifyContent: 'space-between',
+                            alignItems: 'center', width: '100%',
+                        }}>
+                            <Typography
+                                sx={{
+                                    color: '#325343', fontSize: '1rem', fontWeight: 800,
+                                    alignSelf: 'flex-start',
+                                }}
+                            >
+                                ₹ {item.price}
+                            </Typography>
+                            <AddShoppingCartIcon sx={{ color: '#325343', fontSize: '1.5rem', cursor: 'pointer' }}
+                                onClick={() => { handleAddToCart(item._id) }} />
+                        </CardActions>
+                    </Card>
+                ))}
+            </Box>
         </Box>
     );
 }

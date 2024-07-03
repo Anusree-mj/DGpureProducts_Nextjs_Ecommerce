@@ -6,29 +6,30 @@ import Cart from "@/models/cartModels";
 
 export const addProductToCart = async (data: any) => {
     await connectToMongoDB();
-    const { userId, productId, count } = data;
     try {
+    const { userId, productId } = data;
         const product = await Product.findById(productId);
         if (!product) {
             return { message: 'Product not found' };
         }
 
-        const productTotal = product.price * count;
+        let productTotal = product.price;
 
         let cart = await Cart.findOne({ userId });
         if (cart) {
             const productIndex = cart.products.findIndex((item) => item.productId.toString() === productId);
             if (productIndex > -1) {
-                cart.products[productIndex].count += count;
+                cart.products[productIndex].count += 1;
+                productTotal += productTotal
             } else {
-                cart.products.push({ productId, count });
+                cart.products.push({ productId, count: 1 });
             }
             cart.totalAmount += productTotal;
             await cart.save();
         } else {
             cart = await Cart.create({
                 userId,
-                products: [{ productId, count }],
+                products: [{ productId, count: 1 }],
                 totalAmount: productTotal
             });
             await cart.save();

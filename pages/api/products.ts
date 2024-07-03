@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { connectToMongoDB } from '@/libs/connectDB';
 import Product from '@/models/productsModels';
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+const getProducts = async (req: NextApiRequest, res: NextApiResponse) =>{
     await connectToMongoDB();
 
     try {
@@ -18,3 +18,5 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         res.status(500).json({ status: 'nok', message: error });
     }
 }
+
+export default getProducts;
