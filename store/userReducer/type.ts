@@ -29,3 +29,11 @@ export interface CartItem {
     products: CartProduct[];
     totalAmount: number
 }
+
+export interface OrderItem {
+    _id: string;
+    userId: string;
+    products: CartProduct[];
+    totalAmount: number,
+    orderStatus: string
+}

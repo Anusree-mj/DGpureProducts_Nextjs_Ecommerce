@@ -1,14 +1,108 @@
-import { userCartStateType } from "@/store/userReducer/userCartReducer";
+import { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { toast } from "react-toastify";
+import { apiCall } from "@/services/api";
+import { getCartListAction, userCartStateType } from "@/store/userReducer/userCartReducer";
 import { userStateType } from "@/store/userReducer/userReducer";
-import { Box, Button, Divider, Typography } from "@mui/material"
-import { useSelector } from "react-redux"
+import { UserItem } from "@/store/userReducer/type";
+import { Box, Button, Divider, Typography } from "@mui/material";
+import { saveOrderDetails } from '@/store/userReducer/userCartReducer';
+import { useRouter } from "next/navigation";
+
+interface RazorpayPaymentResponse {
+    razorpay_payment_id: string;
+    razorpay_order_id: string;
+    razorpay_signature: string;
+}
 
 const OrderSummaryComponent = () => {
+    const dispatch = useDispatch();
+    const router = useRouter();
     const userDetails = useSelector((state: { user: userStateType }) => state.user.user);
     const totalAmount = useSelector((state: { userCart: userCartStateType }) => state.userCart.cartList.totalAmount);
 
+    useEffect(() => {
+        const script = document.createElement("script");
+        script.src = "https://checkout.razorpay.com/v1/checkout.js";
+        script.async = true;
+        document.body.appendChild(script);
+
+        return () => {
+            document.body.removeChild(script);
+        };
+    }, []);
+
+    const handlePurchase = async () => {
+        try {
+            const response = await apiCall({
+                method: 'POST',
+                endpoint: `checkout`,
+                body: { userId: userDetails._id, totalAmount }
+            });
+
+            if (response.status === 'ok' && response.order) {
+                razorpayPayment(response.order, userDetails);
+            } else {
+                toast.error(`Failed to make purchase. Please try again!`);
+            }
+        } catch (err) {
+            console.log('Err found', err);
+        }
+    };
+
+    const razorpayPayment = (order: { id: string; amount: number }, user: UserItem) => {
+        const options: any = {
+            key_id: 'rzp_test_mj8FaMjD2VYPW4',
+            amount: order.amount,
+            currency: "INR",
+            name: "DGPure",
+            description: "Test Transaction",
+            image: "#",
+            order_id: order.id,
+            handler: function (response: RazorpayPaymentResponse) {
+                verifyPayment(response, order);
+            },
+            prefill: {
+                name: user.name,
+                contact: user.phone,
+            },
+            notes: {
+                address: user.address,
+            },
+            theme: {
+                color: "#3399cc",
+            },
+        };
+
+        const Razorpay = (window as any).Razorpay;
+        const rzp1 = new Razorpay(options);
+        rzp1.open();
+    };
+
+    const verifyPayment = async (payment: RazorpayPaymentResponse, order: { id: string; amount: number }) => {
+        try {
+            const response = await apiCall({
+                method: 'PUT',
+                endpoint: `checkout`,
+                body: { payment, order, userId: userDetails._id }
+            });
+
+            if (response.status === 'ok' && response.order) {
+                console.log('order details', response.order)
+                dispatch(saveOrderDetails(response.order))
+                dispatch(getCartListAction());
+                router.push('/orderSuccess')
+            } else {
+                toast.error(`Failed to make purchase. Please try again!`);
+            }
+        } catch (err) {
+            console.log('Err found', err)
+        }
+    };
+
     return (
-        <Box sx={{mt:1,
+        <Box sx={{
+            mt: 1,
             display: 'flex', flexDirection: 'column',
             alignItems: 'flex-start', justifyContent: 'flex-start',
             width: '30rem', maxWidth: '100%', minHeight: '75vh',
@@ -163,7 +257,7 @@ const OrderSummaryComponent = () => {
                     </Typography>
                 </Box>
                 <Button variant="contained"
-                    sx={{ width: '100%', mt: 3 }}
+                    sx={{ width: '100%', mt: 3 }} onClick={handlePurchase}
                 >Buy Now</Button>
 
             </Box>

@@ -1,21 +1,22 @@
 import mongoose, { Document, Model, ObjectId } from "mongoose";
 
-export interface ICart {
+export interface IOrder {
     userId: ObjectId;
-    products: Array<{
-        productId: ObjectId;
-        count: number;
-        amount: number;
-    }>;
-    totalAmount: number
+    products: [{
+        productId: ObjectId,
+        count: number,
+        amount: number
+    }];
+    totalAmount: number,
+    orderStatus: string
 }
 
-export interface ICartDocument extends ICart, Document {
+export interface IOrderDocument extends IOrder, Document {
     createdAt: Date;
     updatedAt: Date;
 }
 
-const cartSchema = new mongoose.Schema<ICartDocument>(
+const orderSchema = new mongoose.Schema<IOrderDocument>(
     {
         userId: {
             type: mongoose.Schema.Types.ObjectId,
@@ -38,6 +39,10 @@ const cartSchema = new mongoose.Schema<ICartDocument>(
         totalAmount: {
             type: Number,
             required: true
+        },
+        orderStatus: {
+            type: String,
+            default: 'placed'
         }
     },
     {
@@ -45,7 +50,7 @@ const cartSchema = new mongoose.Schema<ICartDocument>(
     }
 );
 
-const Cart: Model<ICartDocument> =
-    mongoose.models?.Cart || mongoose.model("Cart", cartSchema);
+const Order: Model<IOrderDocument> =
+    mongoose.models?.Order || mongoose.model("Order", orderSchema);
 
-export default Cart;
+export default Order;

@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { connectToMongoDB } from '@/libs/connectDB';
 import Product from '@/models/productsModels';
 
-const getProducts = async (req: NextApiRequest, res: NextApiResponse) =>{
+const getProducts = async (req: NextApiRequest, res: NextApiResponse) => {
     await connectToMongoDB();
 
     try {

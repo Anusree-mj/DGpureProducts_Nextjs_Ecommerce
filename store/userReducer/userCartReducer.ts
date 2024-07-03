@@ -1,9 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { CartItem } from "./type";
+import { CartItem, OrderItem } from "./type";
 
 export interface userCartStateType {
     cartList: CartItem;
+    orderDetails: OrderItem;
     isLoading: boolean;
     error: string;
 }
@@ -16,7 +17,14 @@ const initialState: userCartStateType = {
         totalAmount: 0
     },
     isLoading: false,
-    error: ''
+    error: '',
+    orderDetails: {
+        _id: "",
+        userId: "",
+        products: [],
+        totalAmount: 0,
+        orderStatus: ""
+    }
 }
 
 export const userCartSlice: any = createSlice({
@@ -52,6 +60,11 @@ export const userCartSlice: any = createSlice({
             state.error = action.payload;
             console.log('eror found', state.error)
         },
+        // save order details
+        saveOrderDetails: (state, action) => {
+            state.orderDetails = action.payload;
+            console.log('order items', state.orderDetails)
+        },
     }
 })
 export const {
@@ -62,6 +75,7 @@ export const {
 
     getCartListAction,
     getCartListFailureAction,
-    getCartListSuccessAction
+    getCartListSuccessAction,
+    saveOrderDetails,
 
 } = userCartSlice.actions;

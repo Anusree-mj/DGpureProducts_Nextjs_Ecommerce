@@ -1,7 +1,7 @@
 import { useEffect } from "react";
-import { UseDispatch, useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getCartListAction, userCartStateType } from "@/store/userReducer/userCartReducer";
-import { Box, Button, Typography } from "@mui/material"
+import { Box, Typography } from "@mui/material"
 import Image from 'next/image';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import MinimizeOutlinedIcon from '@mui/icons-material/MinimizeOutlined';
@@ -10,7 +10,6 @@ import { apiCall } from '@/services/api';
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import OrderSummaryComponent from "./orderSummaryComponent";
-import ProductsComponent from "./productsComponent";
 
 const CartComponent = () => {
     const dispatch = useDispatch();
@@ -18,14 +17,13 @@ const CartComponent = () => {
     const cartListDetails = useSelector((state: { userCart: userCartStateType }) => state.userCart.cartList);
 
     useEffect(() => {
-        dispatch(getCartListAction())
-    }, [dispatch])
-
-    useEffect(() => {
         if (cartListDetails.products.length === 0) {
             router.push('/')
         }
-    }, [cartListDetails])
+        dispatch(getCartListAction())
+    }, [dispatch])
+
+
 
     const editCount = async (count: number, productId: string, cartId: string) => {
         try {
@@ -86,7 +84,7 @@ const CartComponent = () => {
                     width: '30rem', maxWidth: '100%', minHeight: '75vh',
                 }}>
                     {cartListDetails.products.map((product, index) => (
-                        <Box sx={{
+                        <Box key={index} sx={{
                             p: 3, mt: index === 0 ? 0 : 3,
                             width: '30rem', maxWidth: '90%', boxShadow: '1px 4px 10px rgba(0, 0, 0, 0.1)'
                         }}>
@@ -132,11 +130,9 @@ const CartComponent = () => {
                                     <Box sx={{
                                         mt: 2, p: 0, height: '1.5rem',
                                         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                                        border:'0.5px solid #918080'
                                     }}>
                                         <MinimizeOutlinedIcon sx={{
-                                            color: product.count === 1 ? '#ccc' : '#3d3c3c',
-                                            mb: 2,
+                                            color: product.count === 1 ? '#ccc' : '#3d3c3c', mb: 2,
                                             alignSelf: 'center',
                                             cursor: product.count === 1 ? 'not-allowed' : 'pointer',  // Change cursor style when disabled
 
@@ -155,7 +151,10 @@ const CartComponent = () => {
                                         >
                                             {product.count}
                                         </Typography>
-                                        <AddOutlinedIcon sx={{ alignSelf: 'center', color: '#3d3c3c', }}
+                                        <AddOutlinedIcon sx={{
+                                            alignSelf: 'center', color: '#3d3c3c',
+                                            fontSize: '1rem'
+                                        }}
                                             onClick={() => editCount(product.count + 1,
                                                 product.productId._id, cartListDetails._id
                                             )}
