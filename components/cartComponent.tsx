@@ -23,6 +23,7 @@ const CartComponent = () => {
         if (cartItems.products.length === 0) {
             router.push('/')
         }
+        dispatch(getUserDetailsAction())
     }
     useEffect(() => {
         dispatch(getCartListAction({ handleCartListEmtyAction }))
@@ -58,7 +59,6 @@ const CartComponent = () => {
                 });
                 if (response.status === 'ok') {
                     dispatch(getCartListAction({ handleCartListEmtyAction }))
-                    dispatch(getUserDetailsAction())
                 } else {
                     toast.error(`Can't remove product. Try again!`)
                 }
@@ -98,8 +98,8 @@ const CartComponent = () => {
             <Box sx={{
                 mt: 1,
                 display: 'flex', flexWrap: 'wrap',
-                alignItems: 'center', justifyContent: { md: 'space-between', xs: 'center' },
-                width: '80rem', maxWidth: '90%'
+                alignItems: { xs: 'center', md: 'flex-start' }, justifyContent: { md: 'space-between', xs: 'center' },
+                width: '80rem', maxWidth: '90%', pb: 6,
             }}>
                 {/* cart items */}
                 <Box sx={{
