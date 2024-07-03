@@ -52,7 +52,7 @@ export default function ProductsComponent() {
                             p: 0, boxShadow: '1px 4px 10px rgba(0, 0, 0, 1.1)',
                             mt: 2, display: 'flex', flexWrap: 'wrap', alignItems: 'center',
                             justifyContent: 'center', borderRadius: '1rem',
-                            width: { xs: '8.5rem', sm: '12rem' }, maxWidth: '100%',
+                            width: { xs: '8.4rem', sm: '12rem' }, maxWidth: '100%',
                         }}
                     >
                         <CardActionArea>
