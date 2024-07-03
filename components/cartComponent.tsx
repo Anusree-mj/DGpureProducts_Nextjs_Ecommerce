@@ -11,18 +11,22 @@ import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import OrderSummaryComponent from "./orderSummaryComponent";
 import Swal from "sweetalert2";
+import { CartItem } from "@/store/userReducer/type";
+import { getUserDetailsAction } from "@/store/userReducer/userReducer";
 
 const CartComponent = () => {
     const dispatch = useDispatch();
     const router = useRouter();
     const cartListDetails = useSelector((state: { userCart: userCartStateType }) => state.userCart.cartList);
 
-    useEffect(() => {
-        if (cartListDetails.products.length === 0) {
+    const handleCartListEmtyAction = (cartItems: CartItem) => {
+        if (cartItems.products.length === 0) {
             router.push('/')
         }
-        dispatch(getCartListAction())
-    }, [dispatch, cartListDetails])
+    }
+    useEffect(() => {
+        dispatch(getCartListAction({ handleCartListEmtyAction }))
+    }, [dispatch])
 
 
 
@@ -53,7 +57,8 @@ const CartComponent = () => {
                     body: { productId, cartId }
                 });
                 if (response.status === 'ok') {
-                    dispatch(getCartListAction())
+                    dispatch(getCartListAction({ handleCartListEmtyAction }))
+                    dispatch(getUserDetailsAction())
                 } else {
                     toast.error(`Can't remove product. Try again!`)
                 }
@@ -81,7 +86,7 @@ const CartComponent = () => {
     }
     return (
         <Box sx={{
-            display: 'flex', alignItems: 'center',backgroundColor:'#f0f0f0',
+            display: 'flex', alignItems: 'center', backgroundColor: '#f0f0f0',
             flexDirection: 'column', justifyContent: 'center'
         }}>
             <Typography sx={{

@@ -23,8 +23,6 @@ export default function ProductsComponent() {
 
     const handleAddToCart = (productId: string) => {
         dispatch(addProductToCartAction({ userId, productId, handleAddToCartSuccess }));
-        dispatch(getCartListAction())
-
     }
 
     const handleAddToCartSuccess = () => {
@@ -33,7 +31,7 @@ export default function ProductsComponent() {
     }
     return (
         <Box sx={{
-            minHeight: '100vh',backgroundColor:'#f0f0f0',
+            minHeight: '100vh', backgroundColor: '#f0f0f0',
             display: 'flex', flexDirection: 'column',
             justifyContent: 'flex-start', alignItems: 'center',
         }}>

@@ -9,10 +9,10 @@ import OrderSuccessComponent from "@/components/orderSuccessComponent";
 
 export default function Home() {
     return (
-        <Provider store={store}>
+        <>
             <ToastContainer />
             <MainHeaderComponent />
             <OrderSuccessComponent />
-        </Provider>
+        </>
     );
 }

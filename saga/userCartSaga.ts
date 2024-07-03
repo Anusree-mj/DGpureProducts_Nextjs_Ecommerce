@@ -4,7 +4,7 @@ import {
     getCartListAction, getCartListFailureAction, getCartListSuccessAction,
 } from '@/store/userReducer/userCartReducer';
 import { apiCall } from '@/services/api';
-
+import { CartItem } from '@/store/userReducer/type';
 
 // add product to cart
 function* addProductToCartActionSaga(action: {
@@ -32,7 +32,12 @@ function* addProductToCartActionSaga(action: {
 }
 
 // get cartlist details
-function* getCartListActionSaga(): any {
+function* getCartListActionSaga(action: {
+    type: string;
+    payload: {
+        handleCartListEmtyAction: (cartItems: CartItem) => void
+    }
+}): any {
     try {
         const response = yield call<any>(apiCall, {
             method: 'GET',
@@ -41,6 +46,7 @@ function* getCartListActionSaga(): any {
 
         if (response.status === 'ok') {
             yield put(getCartListSuccessAction(response.cartList))
+            action.payload.handleCartListEmtyAction(response.cartList)
         } else {
             yield put(getCartListFailureAction(response.message))
         }
