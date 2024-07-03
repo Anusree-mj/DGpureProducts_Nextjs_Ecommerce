@@ -33,7 +33,6 @@ export const userCartSlice: any = createSlice({
     reducers: {
         // add product to cart
         addProductToCartAction: (state) => {
-            console.log('entered in user action')
             state.isLoading = true;
         },
         addProductToCartSuccessAction: (state) => {
@@ -42,28 +41,23 @@ export const userCartSlice: any = createSlice({
         addProductToCartFailureAction: (state, action) => {
             state.isLoading = false;
             state.error = action.payload;
-            console.log('eror found', state.error)
         },
 
         // get cart product list
         getCartListAction: (state) => {
-            console.log('entered in user action')
             state.isLoading = true;
         },
         getCartListSuccessAction: (state, action) => {
             state.isLoading = false;
             state.cartList = action.payload;
-            console.log('cart items', state.cartList)
         },
         getCartListFailureAction: (state, action) => {
             state.isLoading = false;
             state.error = action.payload;
-            console.log('eror found', state.error)
         },
         // save order details
         saveOrderDetails: (state, action) => {
             state.orderDetails = action.payload;
-            console.log('order items', state.orderDetails)
         },
     }
 })

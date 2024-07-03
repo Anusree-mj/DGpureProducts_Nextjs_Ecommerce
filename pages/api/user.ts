@@ -7,7 +7,6 @@ const getUserDetails = async (req: NextApiRequest, res: NextApiResponse) => {
   await connectToMongoDB();
 
   try {
-    console.log('entered in api')
     const user = await User.findOne().exec();
     if (user) {
       const cartItems = await Cart.findOne({ userId: user._id })

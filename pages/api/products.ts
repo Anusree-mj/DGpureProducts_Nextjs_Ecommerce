@@ -6,7 +6,6 @@ const getProducts = async (req: NextApiRequest, res: NextApiResponse) => {
     await connectToMongoDB();
 
     try {
-        console.log('entered in api')
         const products = await Product.find();
         if (products.length > 0) {
             res.status(200).json({ status: 'ok', products });

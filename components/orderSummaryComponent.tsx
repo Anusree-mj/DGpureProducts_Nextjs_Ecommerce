@@ -46,7 +46,7 @@ const OrderSummaryComponent = () => {
                 toast.error(`Failed to make purchase. Please try again!`);
             }
         } catch (err) {
-            console.log('Err found', err);
+            console.error(err);
         }
     };
 
@@ -88,7 +88,6 @@ const OrderSummaryComponent = () => {
             });
 
             if (response.status === 'ok' && response.order) {
-                console.log('order details', response.order)
                 dispatch(saveOrderDetails(response.order))
                 dispatch(getCartListAction());
                 router.push('/orderSuccess')
@@ -96,7 +95,7 @@ const OrderSummaryComponent = () => {
                 toast.error(`Failed to make purchase. Please try again!`);
             }
         } catch (err) {
-            console.log('Err found', err)
+            console.error(err);
         }
     };
 

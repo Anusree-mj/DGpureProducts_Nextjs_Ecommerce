@@ -8,7 +8,6 @@ const cartActions = async (req: NextApiRequest, res: NextApiResponse) => {
     try {
         if (req.method === "POST") {
             const { userId, productId } = req.body;
-            console.log('got userId:', userId, 'productId:', productId)
             const product = await Product.findById(productId);
             if (product) {
                 let cart = await Cart.findOne({ userId });
@@ -30,7 +29,6 @@ const cartActions = async (req: NextApiRequest, res: NextApiResponse) => {
                     });
                     await cart.save();
                 }
-                console.log('cart details', cart)
                 res.status(200).json({ status: 'ok' });
             } else {
                 res.status(404).json({ status: 'nok', message: 'Product not found' });
@@ -48,7 +46,6 @@ const cartActions = async (req: NextApiRequest, res: NextApiResponse) => {
         }
         else if (req.method === 'PUT') {
             const { productId, cartId, count } = req.body;
-            console.log('prouctId:', productId, 'cartId', cartId, 'count:', count);
 
             const cart = await Cart.findById(cartId);
             if (!cart) {
@@ -70,7 +67,6 @@ const cartActions = async (req: NextApiRequest, res: NextApiResponse) => {
 
             cart.totalAmount = cart.products.reduce((acc, item) => acc + item.amount, 0);
             await cart.save();
-            console.log('cart updated', cart)
             res.status(200).json({ status: 'ok' });
         }
         else if (req.method === 'DELETE') {
@@ -85,7 +81,6 @@ const cartActions = async (req: NextApiRequest, res: NextApiResponse) => {
                     cart.totalAmount -= amountToRemove;
 
                     await cart.save();
-                    console.log('cart updated', cart)
                     res.status(200).json({ status: 'ok', cartList: cart });
                 } else {
                     res.status(404).json({ status: 'nok', message: 'Product not found in cart' });

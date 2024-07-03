@@ -45,7 +45,7 @@ const CartComponent = () => {
             }
         }
         catch (err) {
-            console.log('Err found', err)
+            console.error(err);
         }
     }
     const removeProduct = async (productId: string, cartId: string) => {
@@ -67,7 +67,7 @@ const CartComponent = () => {
             }
         }
         catch (err) {
-            console.log('Err found', err)
+            console.error(err);
         }
     }
     const showConfirmationDialog = async (): Promise<boolean> => {

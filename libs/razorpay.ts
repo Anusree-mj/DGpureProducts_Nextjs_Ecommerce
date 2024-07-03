@@ -55,7 +55,6 @@ const verifyPayment = (payment: PaymentDetails): { status: 'ok' | 'nok' } => {
     if (generatedSignature === razorpaySignature) {
         return { status: 'ok' };
     } else {
-        console.log(`payment doesn't match`);
         return { status: 'nok' };
     }
 }

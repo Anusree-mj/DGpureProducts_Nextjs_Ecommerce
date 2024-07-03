@@ -27,7 +27,6 @@ const checkoutActions = async (req: NextApiRequest, res: NextApiResponse) => {
             }
         } else if (req.method === 'PUT') {
             const { payment, order, userId } = req.body;
-            console.log('reached in putpayment:', payment, 'order:', order, userId)
             const { status } = verifyPayment(payment)
             if (status === 'ok') {
                 await Cart.deleteOne({ userId: userId });
