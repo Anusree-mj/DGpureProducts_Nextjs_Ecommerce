@@ -1,4 +1,4 @@
-# DGpure
+# 🛒 DGpure
 
 DGpure is a sample e-commerce application developed with Next.js and TypeScript. It was created within a day and includes the following features:
 - **Product Listing Page**: View a list of available products.
@@ -16,4 +16,4 @@ DGpure is a sample e-commerce application developed with Next.js and TypeScript.
 - **Material-UI**: For styling the application.
 
 
-## Deployrd on Vercel
+## Deployed on Vercel
